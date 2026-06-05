@@ -21,6 +21,10 @@ workflows:
         script: |
           chmod +x ./node_modules/.bin/cap
 
+      - name: Set iOS Deployment Target
+        script: |
+          sed -i '' 's/platform :ios, .*/platform :ios, '\''13.0'\''/' ios/App/Podfile
+
       - name: Sync Capacitor
         script: |
           npx cap sync ios
