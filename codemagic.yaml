@@ -22,22 +22,14 @@ scripts:
     script: |
       chmod +x ./node_modules/.bin/cap
 
-  - name: Add iOS Platform
+  - name: Sync Capacitor
     script: |
-      npx cap add ios
-
-  - name: Update Podfile Deployment Target
-    script: |
-      sed -i '' "s/platform :ios, '11.0'/platform :ios, '13.0'/g" ios/App/Podfile
+      npx cap sync ios
 
   - name: Install CocoaPods
     script: |
       cd ios/App
       pod install
-
-  - name: Sync Capacitor
-    script: |
-      npx cap sync ios
 
   - name: Build IPA
     script: |
