@@ -17,6 +17,10 @@ workflows:
         script: |
           npm install @capacitor/ios
 
+      - name: Fix Capacitor Permissions
+        script: |
+          chmod +x ./node_modules/.bin/cap
+
       - name: Sync Capacitor
         script: |
           npx cap sync ios
