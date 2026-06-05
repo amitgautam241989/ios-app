@@ -7,31 +7,30 @@ workflows:
       vars:
         BUNDLE_ID: "com.epms.com"
     scripts:
-      - name: Install dependencies
+      - name: Install Node dependencies
         script: |
           npm install
 
-      - name: Install Capacitor iOS
+      - name: Print Podfile for debug
         script: |
-          npm install @capacitor/ios
+          echo "===== Podfile Content ====="
+          cat ios/App/Podfile
+          echo "==========================="
 
-      - name: Add iOS Platform
+      - name: Force set iOS deployment target
         script: |
-          npx cap add ios || true
+          sed -i '' "s/^platform :ios.*/platform :ios, '14.0'/" ios/App/Podfile
+          echo "===== Updated Podfile ====="
+          cat ios/App/Podfile
+          echo "==========================="
 
-      - name: Fix Deployment Target in Podfile BEFORE sync
-        script: |
-          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/" ios/App/Podfile
-          # Also patch capacitor.config if needed
-          cat ios/App/Podfile | grep platform
-
-      - name: Fix Capacitor Permissions
+      - name: Fix Capacitor CLI permissions
         script: |
           chmod +x ./node_modules/.bin/cap
 
-      - name: Sync Capacitor
+      - name: Capacitor sync (skip pod install)
         script: |
-          npx cap sync ios
+          npx cap sync ios --no-deps
 
       - name: Install CocoaPods
         script: |
