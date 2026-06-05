@@ -1,0 +1,9 @@
+{
+  "appId": "com.epms.com",
+  "appName": "epms-mobile",
+  "webDir": "www",
+  "server": {
+    "url": "https://ap.epmsindia.com",
+    "cleartext": false
+  }
+}
