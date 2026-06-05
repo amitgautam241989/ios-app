@@ -1,44 +1,49 @@
 workflows:
-  ios-workflow:
-    name: iOS Workflow
-    max_build_duration: 120
-    instance_type: mac_mini_m2
+ios-workflow:
+name: iOS Workflow
+max_build_duration: 120
+instance_type: mac_mini_m2
 
-    environment:
-      vars:
-        BUNDLE_ID: "com.epms.com"
 
-    scripts:
-      - name: Install dependencies
-        script: |
-          npm install
+environment:
+  vars:
+    BUNDLE_ID: "com.epms.com"
 
-      - name: Install Capacitor iOS
-        script: |
-          npm install @capacitor/ios
+scripts:
+  - name: Install dependencies
+    script: |
+      npm install
 
-      - name: Fix Capacitor Permissions
-        script: |
-          chmod +x ./node_modules/.bin/cap
+  - name: Install Capacitor iOS
+    script: |
+      npm install @capacitor/ios
 
-      - name: Set iOS Deployment Target
-        script: |
-          sed -i '' 's/platform :ios, .*/platform :ios, '\''13.0'\''/' ios/App/Podfile
+  - name: Fix Capacitor Permissions
+    script: |
+      chmod +x ./node_modules/.bin/cap
 
-      - name: Sync Capacitor
-        script: |
-          npx cap sync ios
+  - name: Add iOS Platform
+    script: |
+      npx cap add ios
 
-      - name: Install CocoaPods
-        script: |
-          cd ios/App
-          pod install
+  - name: Update Podfile Deployment Target
+    script: |
+      sed -i '' "s/platform :ios, '11.0'/platform :ios, '13.0'/g" ios/App/Podfile
 
-      - name: Build IPA
-        script: |
-          xcode-project build-ipa \
-          --workspace ios/App/App.xcworkspace \
-          --scheme App
+  - name: Install CocoaPods
+    script: |
+      cd ios/App
+      pod install
 
-    artifacts:
-      - build/ios/ipa/*.ipa
+  - name: Sync Capacitor
+    script: |
+      npx cap sync ios
+
+  - name: Build IPA
+    script: |
+      xcode-project build-ipa \
+      --workspace ios/App/App.xcworkspace \
+      --scheme App
+
+artifacts:
+  - build/ios/ipa/*.ipa
