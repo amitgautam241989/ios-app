@@ -10,25 +10,38 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+
       - name: Install Capacitor iOS
         script: |
           npm install @capacitor/ios
+
+      - name: Add iOS Platform
+        script: |
+          npx cap add ios || true
+
+      - name: Fix Deployment Target in Podfile BEFORE sync
+        script: |
+          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '14.0'/" ios/App/Podfile
+          # Also patch capacitor.config if needed
+          cat ios/App/Podfile | grep platform
+
       - name: Fix Capacitor Permissions
         script: |
           chmod +x ./node_modules/.bin/cap
+
       - name: Sync Capacitor
         script: |
           npx cap sync ios
-      - name: Set iOS Deployment Target
-        script: |
-          sed -i '' 's/platform :ios, .*/platform :ios, '\''13.0'\''/' ios/App/Podfile
+
       - name: Install CocoaPods
         script: |
-          cd ios/App && pod install
+          cd ios/App && pod install --repo-update
+
       - name: Build IPA
         script: |
           xcode-project build-ipa \
             --workspace ios/App/App.xcworkspace \
             --scheme App
+
     artifacts:
       - build/ios/ipa/*.ipa
