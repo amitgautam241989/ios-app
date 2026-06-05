@@ -19,9 +19,14 @@ workflows:
         script: |
           npx cap sync ios
 
-      - name: List iOS folder for debug
+      - name: Find xcworkspace path
         script: |
+          echo "===== Searching for xcworkspace ====="
+          find . -name "*.xcworkspace" -not -path "*/node_modules/*"
+          echo "===== Searching for xcodeproj ====="
+          find . -name "*.xcodeproj" -not -path "*/node_modules/*"
           echo "===== iOS folder structure ====="
+          ls -la ios/
           ls -la ios/App/
           echo "================================"
 
