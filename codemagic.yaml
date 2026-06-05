@@ -11,30 +11,19 @@ workflows:
         script: |
           npm install
 
-      - name: Print Podfile for debug
-        script: |
-          echo "===== Podfile Content ====="
-          cat ios/App/Podfile
-          echo "==========================="
-
-      - name: Force set iOS deployment target
-        script: |
-          sed -i '' "s/^platform :ios.*/platform :ios, '14.0'/" ios/App/Podfile
-          echo "===== Updated Podfile ====="
-          cat ios/App/Podfile
-          echo "==========================="
-
       - name: Fix Capacitor CLI permissions
         script: |
           chmod +x ./node_modules/.bin/cap
 
-      - name: Capacitor sync (skip pod install)
+      - name: Capacitor sync iOS
         script: |
-          npx cap sync ios --no-deps
+          npx cap sync ios
 
-      - name: Install CocoaPods
+      - name: List iOS folder for debug
         script: |
-          cd ios/App && pod install --repo-update
+          echo "===== iOS folder structure ====="
+          ls -la ios/App/
+          echo "================================"
 
       - name: Build IPA
         script: |
